@@ -87,13 +87,23 @@ export class UsersRepository {
       // console.log('res0 ', res0);
       // return res0;
 
-      // await entityManager.createQueryBuilder()
-      const res = await entityManager.query(`
-      select name, count(name) as "Number of users with same name" from users
-      group by name
-      having count(name) > 1
-      `);
+      const res = await this.dataSource.createQueryBuilder()
+      .select('name')
+      .addSelect('count(name)', 'frequency')
+      .from(UserEntity, 'users')
+      .groupBy('name')
+      .having('count(name) > 1')
+      .getRawMany();
+      
+      
+
+      // const res = await entityManager.query(`
+      // select name, count(name) as "Number of users with same name" from users
+      // group by name
+      // having count(name) > 1
+      // `);
       console.log('res ', res);
+
       return res; 
 
     } catch (err) {
