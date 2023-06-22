@@ -20,22 +20,14 @@ export class UsersRepository {
     }
   }
 
-  async findAllUsers() {
+  async findAllUsers(): Promise<UserEntity[]> {
     try {
       let entityManager = this.dataSource.manager;
-      const all_users = await this.dataSource.query(`select * from users`);
-      return all_users;
 
-
-      // const all_users = await this.dataSource
-      // .getRepository(UserEntity)
-      // .createQueryBuilder("user")
-      // .getMany();
-      // return all_users;
-
-      // const all_users = await this.dataSource
-      // .createQueryBuilder()
-
+      const all_users = await this.dataSource
+      .getRepository(UserEntity)
+      .createQueryBuilder("user")
+      .getMany();
       return all_users;
 
     } catch (err) {
