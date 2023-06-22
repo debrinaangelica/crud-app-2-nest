@@ -27,7 +27,9 @@ export class UsersRepository {
       const all_users = await this.dataSource
       .getRepository(UserEntity)
       .createQueryBuilder("user")
+      .limit(10)
       .getMany();
+      console.log('all_users: ', all_users);
       return all_users;
 
     } catch (err) {
@@ -68,6 +70,31 @@ export class UsersRepository {
       let entityManager = this.dataSource.manager;
 
       await entityManager.delete(UserEntity, id);
+
+    } catch (err) {
+      console.log(err.stack);
+    }
+  }
+
+  async random(id: number) {
+    try {
+      let entityManager = this.dataSource.manager;
+
+      // const res0 = await entityManager.query(`
+      // select * from users
+      // limit 10
+      // `);
+      // console.log('res0 ', res0);
+      // return res0;
+
+      // await entityManager.createQueryBuilder()
+      const res = await entityManager.query(`
+      select name, count(name) as "Number of users with same name" from users
+      group by name
+      having count(name) > 1
+      `);
+      console.log('res ', res);
+      return res; 
 
     } catch (err) {
       console.log(err.stack);

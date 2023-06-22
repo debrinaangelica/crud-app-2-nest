@@ -90,4 +90,12 @@ export class UsersService {
       console.log(err.stack);
     }
   }
+
+  async random(id: number) {
+    try {
+      return await this.usersRepository.random(id);
+    } catch (err) {
+      console.log(err.stack);
+    }
+  }
 }
