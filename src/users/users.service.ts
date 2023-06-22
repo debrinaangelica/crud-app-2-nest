@@ -52,8 +52,8 @@ export class UsersService {
       res.email = foundUser.email;
       res.is_partner = foundUser.is_partner;
       res.status = foundUser.status;
-      res.created_at = foundUser.created_at;
-      res.updated_at = foundUser.updated_at;
+      // res.created_at = foundUser.created_at;
+      // res.updated_at = foundUser.updated_at;
 
       return res;
 

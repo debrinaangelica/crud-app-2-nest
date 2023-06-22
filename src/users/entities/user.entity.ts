@@ -51,9 +51,9 @@ export class UserEntity {
     })
     status: number;
 
-    @Column({ type: 'timestamp', default: null })
-    created_at: Date;
+    // @Column({ type: 'timestamp', default: null })
+    // created_at: Date;
 
-    @Column({ type: 'timestamp', default: null })
-    updated_at: Date;
+    // @Column({ type: 'timestamp', default: null })
+    // updated_at: Date;
 }
