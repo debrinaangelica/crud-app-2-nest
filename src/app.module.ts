@@ -4,29 +4,31 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
+import { RolesModule } from './roles/roles.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: process.env.DEVDBHOST,
-      port: 3306,
-      username: process.env.DEVDBUSER,
-      password: process.env.DEVDBPASSWORD,
-      database: process.env.DEVDBNAME,
-      entities: ['dist/**/*.entity{.ts,.js}'],
-      synchronize: false,
-    }),
     // TypeOrmModule.forRoot({
-    //   type: 'sqlite',
-    //   database: 'db.sqlite',
+    //   type: 'mysql',
+    //   host: process.env.DEVDBHOST,
+    //   port: 3306,
+    //   username: process.env.DEVDBUSER,
+    //   password: process.env.DEVDBPASSWORD,
+    //   database: process.env.DEVDBNAME,
     //   entities: ['dist/**/*.entity{.ts,.js}'],
-    //   synchronize: true,
+    //   synchronize: false,
     // }),
-    UsersModule,    
+    TypeOrmModule.forRoot({
+      type: 'sqlite',
+      database: 'db.sqlite',
+      entities: ['dist/**/*.entity{.ts,.js}'],
+      synchronize: true,
+    }),
+    UsersModule,
+    RolesModule,    
   ],
   controllers: [AppController],
   providers: [AppService],

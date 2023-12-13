@@ -2,12 +2,16 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto, UserResult } from './dto/user.dto';
 import { UserEntity } from './entities/user.entity';
 import { UsersRepository } from './users.repo';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class UsersService {
 
   // constructor (@InjectRepository(UserEntity) private usersRepository: Repository<UserEntity>) {}
-  constructor(@Inject(UsersRepository) private usersRepository: UsersRepository) {}
+  constructor(
+    @Inject(UsersRepository) private usersRepository: UsersRepository,
+    private dataSource: DataSource,
+  ) {}
 
   async create(createUserDto: CreateUserDto) {
     try {
@@ -63,6 +67,13 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
+
+    const runner = this.dataSource.createQueryRunner();
+    console.log('runner is: ', runner);
+    console.log('runner created');
+    await runner.connect();
+    await runner.startTransaction();
+    console.log('transaction begun');
     try {
       const existed = await this.usersRepository.findOneUser(id);
 
@@ -76,10 +87,18 @@ export class UsersService {
       updated.is_partner = updateUserDto.is_partner;
       updated.status = updateUserDto.status;
       
-      await this.usersRepository.updateUser(id, updated);
+      await this.usersRepository.updateUser(id, updated, runner);
+      await this.usersRepository.updateUser2(id, runner);
+
+      await runner.commitTransaction();
 
     } catch (err) {
       console.log(err.stack);
+      console.log('caught');
+      await runner.rollbackTransaction();
+
+    } finally {
+      await runner.release();
     }
   }
 
@@ -94,6 +113,21 @@ export class UsersService {
   async random(id: number) {
     try {
       return await this.usersRepository.random(id);
+    } catch (err) {
+      console.log(err.stack);
+    }
+  }
+  async otherRepo(id: number) {
+    try {
+      return await this.usersRepository.otherRepo(id);
+    } catch (err) {
+      console.log(err.stack);
+    }
+  }
+
+  async testLock(id: number) {
+    try {
+      return await this.usersRepository.testLock(id);
     } catch (err) {
       console.log(err.stack);
     }
