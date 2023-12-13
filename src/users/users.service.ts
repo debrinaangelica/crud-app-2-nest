@@ -127,6 +127,7 @@ export class UsersService {
 
   async testLock(id: number) {
     try {
+      
       return await this.usersRepository.testLock(id);
     } catch (err) {
       console.log(err.stack);
